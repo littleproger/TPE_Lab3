@@ -169,12 +169,19 @@ while True:
       print("Kритерій Кохрена: ")
       print("Gp = "+str(round(Gp,5)))
       print("Gt = "+str(round(Gt,5)))
-      if Gp < Gt:
-            print("Дисперсія однорідна (Gp < Gt)")
-            break
-      else:
+
+      # Перевірка на однорідність
+      def check_G(Gp,Gt):
+          global m
+          if Gp < Gt:
+              print("Дисперсія однорідна (Gp < Gt)")
+              return True
+          else:
             print("Дисперсія неоднорідна (Gp > Gt)")
+            return False
             m+=1
+      if check_G(Gp,Gt):
+          break
 
 
 print("\n\nКритерій Стьюдента:")
@@ -211,10 +218,14 @@ f3 = f1*f2
 print(f"f3 = f1 * f2 = {f3}")
 t_kr = t_table[f3]
 print("t_kr = "+str(t_kr))
-print("t(i) < t_kr: "+str([i for i in t if i<=t_kr]))
-print("\nНезначимі коефіцієнти:"+str([b[i] for i in range(len(t)) if t[i]<=t_kr]))
-print("Значимі коефіцієнти: "+str([b[i] for i in range(len(t)) if t[i]>t_kr]))
 t_final = list(filter(lambda x: x<t_kr, t))
+
+# Перевірка на значимість коефіцієнтів
+def check_koef(arr_t,arr_b,t_kr):
+    print("t(i) < t_kr: "+str([i for i in t if i<=t_kr]))
+    print("\nНезначимі коефіцієнти:"+str([b[i] for i in range(len(t)) if t[i]<=t_kr]))
+    print("Значимі коефіцієнти: "+str([b[i] for i in range(len(t)) if t[i]>t_kr])+"\n")
+check_koef(t,b,t_kr)
 
 for i in range(len(t)):
       if t[i] <= t_kr:
@@ -239,7 +250,11 @@ Fp = D_ad/S
 print(f"Fp = {Fp}")
 Ft = F_table[f3-1][f4-1]
 print("Ft = "+str(Ft))
-if Ft > Fp:
+
+# Перевірка на адекватність
+def check_F(a,b):
+    if a > b:
       print("Ft > Fp\nРівняння регресії адекватно оригіналу при рівні значимості "+str(q))
-else:
+    else:
       print("Ft < Fp\nРівняння регресії неадекватно оригіналу при рівні значимості "+str(q))
+check_F(Ft,Fp)
